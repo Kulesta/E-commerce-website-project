@@ -6,11 +6,11 @@ import ProductItem from '../components/ProductItem'
 
 const collection = () => {
 
-  const { products } = useContext(ShopContext);
+  const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setshowFilter]= useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory]= useState([]);
-  const [subcategory,setSubCategory] = useState([]);
+  const [subCategory,setSubCategory] = useState([]);
   const [sortType, setSortType] = useState('relavent');
 
   const toggleCatagory =(e)=>{
@@ -22,8 +22,8 @@ const collection = () => {
     }
   }
 
-  const toggleSubCatagory= (e) =>{
-    if(subcategory.includes(e.target.value)){
+  const toggleSubCatagory =(e)=>{
+    if(subCategory.includes(e.target.value)){
       setSubCategory(prev=>prev.filter(item => item !== e.target.value))
     }
     else{
@@ -34,11 +34,15 @@ const collection = () => {
   const applyFilter = ()=>{
     let productsCopy = products.slice();
 
+    if(showSearch && search){
+      productsCopy= productsCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
+    }
+
     if(category.length > 0){
       productsCopy = productsCopy.filter(item => category.includes(item.category));
     }
-    if(subcategory.length > 0){
-      productsCopy= productsCopy.filter(item => subcategory.includes(item.subcategory));
+    if(subCategory.length > 0){
+      productsCopy= productsCopy.filter(item => subCategory.includes(item.subCategory));
     }
     setFilterProducts(productsCopy);
   }
@@ -64,7 +68,7 @@ const collection = () => {
 
   useEffect(()=>{
     applyFilter();
-  },[category, subcategory])
+  },[category, subCategory, search, showSearch])
 
   useEffect(()=>{
     sortProducts();
